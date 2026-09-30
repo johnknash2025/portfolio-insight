@@ -1,0 +1,23 @@
+name: Feedback on this project page
+description: Tell me what is unclear, missing or wrong. Every comment is read.
+title: "[Feedback] "
+labels: ["feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: "Please do not include confidential or personal data."
+  - type: dropdown
+    id: role
+    attributes:
+      label: Which best describes you? (optional)
+      options: ["I run local models", "I build AI products", "I hire or work with engineers", "Other"]
+  - type: textarea
+    id: unclear
+    attributes:
+      label: What is unclear, missing or wrong on the page?
+    validations:
+      required: true
+  - type: textarea
+    id: wish
+    attributes:
+      label: What would you want to see or be able to do?
