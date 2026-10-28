@@ -1,0 +1,25 @@
+{
+  "name": "portfolio-insight",
+  "version": "1.0.0",
+  "description": "> Documentation only. The software is proprietary and its source is not published here. *Portfolio Insight is a working title.* **Not investment advice.**",
+  "scripts": {
+    "test": "node --test tests/portfolio.test.ts",
+    "start": "node src/mcp.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johnknash2025/portfolio-insight.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/johnknash2025/portfolio-insight/issues"
+  },
+  "homepage": "https://github.com/johnknash2025/portfolio-insight#readme",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2"
+  },
+  "type": "module",
+  "private": "true"
+}
