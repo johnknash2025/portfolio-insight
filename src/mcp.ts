@@ -39,19 +39,21 @@ function loadData() {
   return { trades, snapshots, dividends, dataThroughDate, hasHoldingsSource: trades.length > 0 || snapshots.length > 0 };
 }
 
+type LoadedData = ReturnType<typeof loadData>;
+
 function defaultAsOf(dataThroughDate: string | null): string {
   if (dataThroughDate === null) throw new Error("no holdings data found; expected data/trades.csv or data/holdings.csv");
   return dataThroughDate;
 }
 
-function currentHoldings(asOf: string) {
-  const { trades, snapshots } = loadData();
+function currentHoldings(data: LoadedData, asOf: string) {
+  const { trades, snapshots } = data;
   if (trades.length > 0) return holdingsFromTrades(trades, asOf);
   return holdingsFromSnapshots(snapshots, asOf);
 }
 
-function quantitySource(): (symbol: string, date: string) => number {
-  const { trades, snapshots } = loadData();
+function quantitySource(data: LoadedData): (symbol: string, date: string) => number {
+  const { trades, snapshots } = data;
   if (trades.length > 0) {
     return (symbol, date) => {
       const pos = holdingsFromTrades(trades, date).positions.find((p) => p.symbol === symbol);
@@ -101,9 +103,9 @@ server.registerTool(
   },
   (args) =>
     guard(() => {
-      const { dataThroughDate } = loadData();
-      const asOf = args.as_of ?? defaultAsOf(dataThroughDate);
-      return currentHoldings(asOf);
+      const data = loadData();
+      const asOf = args.as_of ?? defaultAsOf(data.dataThroughDate);
+      return currentHoldings(data, asOf);
     })
 );
 
@@ -119,9 +121,9 @@ server.registerTool(
   },
   (args) =>
     guard(() => {
-      const { dataThroughDate } = loadData();
-      const asOf = args.as_of ?? defaultAsOf(dataThroughDate);
-      const holdings = currentHoldings(asOf);
+      const data = loadData();
+      const asOf = args.as_of ?? defaultAsOf(data.dataThroughDate);
+      const holdings = currentHoldings(data, asOf);
       if (holdings.positions.length === 0) throw new Error(`no positions on or before ${asOf}`);
       return buildAllocation(holdings);
     })
@@ -141,9 +143,9 @@ server.registerTool(
   (args) =>
     guard(() => {
       if (args.from > args.to) throw new Error(`from (${args.from}) must be on or before to (${args.to})`);
-      const { trades, snapshots } = loadData();
-      if (trades.length > 0) return changesFromTrades(trades, args.from, args.to);
-      if (snapshots.length > 0) return changesFromSnapshots(snapshots, args.from, args.to);
+      const data = loadData();
+      if (data.trades.length > 0) return changesFromTrades(data.trades, args.from, args.to);
+      if (data.snapshots.length > 0) return changesFromSnapshots(data.snapshots, args.from, args.to);
       throw new Error("no holdings data found; expected data/trades.csv or data/holdings.csv");
     })
 );
@@ -162,11 +164,11 @@ server.registerTool(
   },
   (args) =>
     guard(() => {
-      const { dividends, dataThroughDate } = loadData();
-      if (dividends.length === 0) throw new Error("no dividend data found; expected data/dividends.csv");
-      const asOf = args.as_of ?? defaultAsOf(dataThroughDate);
+      const data = loadData();
+      if (data.dividends.length === 0) throw new Error("no dividend data found; expected data/dividends.csv");
+      const asOf = args.as_of ?? defaultAsOf(data.dataThroughDate);
       if (args.until !== undefined && args.until < asOf) throw new Error(`until (${args.until}) must be on or after as_of (${asOf})`);
-      return dividendSchedule(dividends, quantitySource(), asOf, args.until, args.include_past ?? false);
+      return dividendSchedule(data.dividends, quantitySource(data), asOf, args.until, args.include_past ?? false);
     })
 );
 

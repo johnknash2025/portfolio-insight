@@ -18,7 +18,8 @@
   },
   "homepage": "https://github.com/johnknash2025/portfolio-insight#readme",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.32.2"
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "zod": "^4.6.7"
   },
   "type": "module",
   "private": "true"
