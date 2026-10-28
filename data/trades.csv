@@ -1,0 +1,6 @@
+date,symbol,side,quantity,price,currency
+2024-01-10,TM,buy,40,210.00,USD
+2024-03-15,AAPL,buy,25,170.50,USD
+2024-06-10,TM,sell,10,230.00,USD
+2024-09-12,AAPL,buy,15,205.00,USD
+2025-01-08,TM,buy,5,218.40,USD
